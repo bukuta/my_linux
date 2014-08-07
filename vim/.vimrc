@@ -36,6 +36,9 @@ Bundle 'taglist.vim'
 Bundle 'taglist-plus'
 Bundle 'sessionman.vim'
 Bundle 'bufexplorer.zip'
+Bundle 'leshill/vim-json'
+Bundle 'vim-scripts/functionlist.vim'
+Bundle 'tagbar'
 " non github repos
 " Bundle 'git://git.wincent.com/command-t.git'
 " ...
@@ -60,3 +63,5 @@ filetype plugin indent on     " required!
 map <F3> :NERDTreeMirror<CR>
 map <F3> :NERDTreeToggle<CR>
 map \be :BufExplorer<CR>
+map <F2> :Flisttoggle<CR>
+nmap <F8> :TagbarToggle<CR>
