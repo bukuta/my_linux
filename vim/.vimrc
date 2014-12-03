@@ -39,6 +39,7 @@ Bundle 'bufexplorer.zip'
 Bundle 'leshill/vim-json'
 Bundle 'vim-scripts/functionlist.vim'
 Bundle 'tagbar'
+Bundle 'kien/ctrlp.vim'
 " non github repos
 " Bundle 'git://git.wincent.com/command-t.git'
 " ...
