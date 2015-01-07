@@ -7,9 +7,15 @@ set autoindent
 set smarttab
 set shiftwidth=2
 set expandtab
+set foldmethod=syntax
+set foldmethod=indent
 
-set nocompatible               " be iMproved
-filetype off                   " required!
+setlocal foldlevel=1
+let b:javascript_fold=1
+let javascript_enable_domhtmlcss=1
+
+"set nocompatible               " be iMproved
+filetype on                   " required!
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -30,19 +36,20 @@ Bundle 'L9'
 Bundle 'The-NERD-tree'
 Bundle 'FuzzyFinder'
 Bundle 'auto_mkdir'
-Bundle 'jsbeautify'
+Bundle 'einars/js-beautify'
 Bundle 'The-NERD-Commenter'
 Bundle 'taglist.vim'
 Bundle 'taglist-plus'
 Bundle 'sessionman.vim'
 Bundle 'bufexplorer.zip'
-Bundle 'leshill/vim-json'
-Bundle 'vim-scripts/functionlist.vim'
-Bundle 'tagbar'
-Bundle 'kien/ctrlp.vim'
 " non github repos
 " Bundle 'git://git.wincent.com/command-t.git'
 " ...
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'kien/ctrlp.vim'
+"Bundle 'drmingdrmer/xptemplate'
+Bundle 'msanders/snipmate.vim'
+Bundle 'mattn/emmet-vim'
 
 filetype plugin indent on     " required!
 "
@@ -59,10 +66,40 @@ filetype plugin indent on     " required!
 "set autoindent
 "set nu
 
+let NERDTreeShowBookmarks=1
 
-
-map <F3> :NERDTreeMirror<CR>
+"let mapleader='\'
+"map <F3> :NERDTreeMirror<CR>
 map <F3> :NERDTreeToggle<CR>
-map \be :BufExplorer<CR>
-map <F2> :Flisttoggle<CR>
-nmap <F8> :TagbarToggle<CR>
+map <leader>be :BufExplorer<CR>
+map <leader>sf :NERDTreeFind<CR>
+map <F8> :!mrsync<CR>
+map <leader>sw :cw<cr>
+map <leader>sn :cn<cr>
+map <leader>sp :cp<cr>
+map <leader>ff :call VGrep()<cr>
+function VGrep()
+  let word=expand("<cword>")
+  echom word
+  :execute 'vimgrep /'.word.'/ **/*'
+  :cw
+endfunction
+function ToggleQuickfix()
+  
+endfunction
+"map \x<space> :<Plug>NERDComToggleComment
+"nmap <F8> :Tlist<CR>
+"nmap <C-/> <Plug>NERDCommenterToggle<CR>
+"nmap <silent> <leader>js :call g:J
+"sbeautify()<cr>
+
+autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+" for html
+autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+" for css or scss
+autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+
+
