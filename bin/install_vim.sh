@@ -28,7 +28,7 @@ fi
 echo "mv ~/.vimrc ~/.bak/.vimrc"
 mv ~/.vimrc ~/.bak/.vimrc
 echo "cp ../vim/.vimrc ~/.vimrc"
-cp ./vim/.vimrc ~/.vimrc
+cp ../vim/.vimrc ~/.vimrc
 
 vim +VundleInstall
 #检测别名是否存在
