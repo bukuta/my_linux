@@ -35,7 +35,7 @@ Bundle 'L9'
 Bundle 'The-NERD-tree'
 Bundle 'FuzzyFinder'
 Bundle 'auto_mkdir'
-Bundle 'jsbeautify'
+"Bundle 'jsbeautify'
 Bundle 'The-NERD-Commenter'
 Bundle 'taglist.vim'
 Bundle 'taglist-plus'
@@ -75,8 +75,11 @@ nmap <F8> :TagbarToggle<CR>
 map <leader>sf :NERDTreeFind<CR>
 map <F8> :!mrsync<CR>
 map <leader>sw :cw<cr>
-map <leader>sn :cn<cr>
+"sn sp 距离太远，不方便
+"\
+map <leader>sn :cn<cr> 
 map <leader>sp :cp<cr>
+nunmap <leader>ff
 map <leader>ff :call VGrep()<cr>
 function VGrep()
   let word=expand("<cword>")
@@ -157,4 +160,29 @@ endfunction
 
 "nmap <F10> :call GetWord()<CR>
 nmap \db :call InsertDebugInfoAtNextLine()<CR>
+
+
+"以当前buffer文件名为目标，查找当前vj工程
+
+function SearchBufferInProject()
+  let s:winindex=winnr()
+  let s:bufindex=winbufnr(s:winindex)
+  let name=bufname(s:bufindex) " 
+  echom name
+  let name=expand('%:t')  " % 当前文件名，：t=》 like basename()
+  execute ':vimgrep '.name.' **/*'
+
+endfunction
+nmap \sg :call SearchBufferInProject()<CR>
+
+"以当前光标下字符串为文件名，在vj中查找此文件，在quickfix列表中展示
+function SearchFileInProject()
+  let s:name=expand('<cfile>')
+  echom s:name
+  let s:basedir=getcwd()
+  let s:filelist=findfile(s:name,s:basedir."**",-1)
+  echom "path:".join(s:filelist,',')
+endfunction
+
+nmap \sd :call SearchFileInProject()<CR>
 
