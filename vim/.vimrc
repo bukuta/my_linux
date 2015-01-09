@@ -158,3 +158,4 @@ endfunction
 "nmap <F10> :call GetWord()<CR>
 nmap \db :call InsertDebugInfoAtNextLine()<CR>
 
+au BufRead,BufNewFile *.tpl set filetype=html
