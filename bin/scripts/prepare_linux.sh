@@ -5,6 +5,6 @@ yum -y install zlib zlib-devel openssl opsnssl-devel pcre pcre-devel
 git clone https://github.com/nginx/nginx.git
 
 cd nginx
-configure
+sh ./configure
 make
 make install

@@ -1,0 +1,69 @@
+devserver : ssh -R 8080:localhost:80 root@www.vps.com
+//将开发机上80端口转发到vps上的8080端口
+//将vps上的8080端口转发到开发机80端口 （从开发机可访问VPS，反之不行，故要远程端口转发）
+local: ssh -L 80:localhost:8080 root@www.vps.com
+//将本地的80端口转发到vps的8080端口上
+//可以访问本地的127.0.0.1:80访问开发机上80端口
+//更进一步，将host  绑定到 127.0.0.1
+Local  ->  VPS  <- Dev
+
+
+ssh 链路
+      在VPS上 ssh 开发机
+      devserver: ssh -R 8022:localhost:22 root@www.vps.com
+           //远程转发：将远程的8022转发到本地22
+           登录VPS，在VPS上，ssh -p 8022 127.0.0.1,即可登录开发机
+           local：只要可以连接上VPS 8022的ssh就可以了。
+           PS:开发机上使用私钥免登录，需要把此私钥copy出，
+           在ssh发起的机器上，需要配置多私钥管理，并指定私钥
+             
+
+             rsync 链路
+             将开发机rsync端口 873做远程转发  到VPS的8873
+             本地rsync 指定端口 rsync —port 8873 xxxxx
+
+
+
+             PS.PS
+             个性化指定 私钥的步骤
+
+             vi ~/.ssh/config文件，加入如下 配置行
+
+             Host xxxx
+             IdentityFile 私钥文件名（不是id_rsa.pub)
+             Port 端口号
+             User 你登陆xxxx服务器用的账号
+             ...
+             注意：
+
+             这个文件没有格式，一行一条记录，不需要tab缩进
+             你可以在这个文件里面指定多个Host
+             一个 Host开头的行 到下一个 Host开头的行 是 这个host的细节设置
+             全局的ssh config 文件在 /etc/ssh/ssh_config
+
+
+             ssh端口更改后rsync的用法
+
+             rsync有两种常用的认证方式，一种为rsync-daemon方式，另外一种则是ssh。
+
+             在一些场合，使用rsync-daemon方式会比较缺乏灵活性，ssh方式则成为首选。但是今天实际操作的时候发现当远端服务器的ssh默认端口被修改后，rsync时找不到一个合适的方法来输入对方ssh服务端口号。
+
+             在查看官方文档后，找到一种方法，即使用-e参数。
+
+             -e参数的作用是可以使用户自由选择欲使用的shell程序来连接远端服务器，当然也可以设置成使用默认的ssh来连接，但是这样我们就可以加入ssh的参数了。
+
+             具体语句写法如下：
+
+             1
+             rsync -e 'ssh -p 1234' username@hostname:SourceFile DestFile
+
+
+
+             其他参数完全按照rsync的规定格式加入即可。
+
+             上面语句中比较新鲜的地方就是使用了单引号，目的是为了使引号内的参数为引号内的命令所用。没有引号的话系统就会识别-p是给rsync的一个参数了。我的描述可能比较烂，详情可以参考rsync官方描述：
+
+             Command-line arguments are permitted in COMMAND provided that COMMAND is presented to rsync as a single argument.  You must use spaces (not tabs or other whitespace) to separate the command and args from each other, and you can use single- and/or double-quotes to preserve spaces in  an  argument (but not backslashes).  Note that doubling a single-quote inside a single-quoted string gives you a single-quote; likewise for double-quotes (though you need to pay attention to which quotes your shell is parsing and which quotes rsync is parsing).
+
+
+             
