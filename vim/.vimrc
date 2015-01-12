@@ -51,7 +51,7 @@ Bundle 'mattn/emmet-vim'
 
 filetype plugin indent on     " required!
 "
-" Brief help  -- ´Ë´¦ºóÃæ¶¼ÊÇvundleµÄÊ¹ÓÃÃüÁî
+" Brief help  -- æ­¤å¤„åé¢éƒ½æ˜¯vundleçš„ä½¿ç”¨å‘½ä»¤
 " :BundleList          - list configured bundles
 " :BundleInstall(!)    - install(update) bundles
 " :BundleSearch(!) foo - search(or refresh cache first) for foo
@@ -75,7 +75,7 @@ nmap <F8> :TagbarToggle<CR>
 map <leader>sf :NERDTreeFind<CR>
 map <F8> :!mrsync<CR>
 map <leader>sw :cw<cr>
-"sn sp ¾àÀëÌ«Ô¶£¬²»·½±ã
+"sn sp è·ç¦»å¤ªè¿œï¼Œä¸æ–¹ä¾¿
 "\
 map <leader>sn :cn<cr> 
 map <leader>sp :cp<cr>
@@ -103,7 +103,7 @@ endfunction
 function GetWord()
   let word = expand('<cword>')
   call GetFiletype()
-  "È¡µÃÎÄ¼şÀàĞÍ£¬²»Í¬µÄÓïÑÔÈ¡µÃµÄ±äÁ¿²»Í¬
+  "å–å¾—æ–‡ä»¶ç±»å‹ï¼Œä¸åŒçš„è¯­è¨€å–å¾—çš„å˜é‡ä¸åŒ
   "php:$abcde
   "php:$abcde["aaa"]
   "php:$abc->abc
@@ -120,8 +120,8 @@ endfunction
 
 function GenDebug()
   let word = GetWord()
-  "È¡µÃÎÄ¼şÀàĞÍ
-  "¸üĞÂÎÄ¼şÀàĞÍÉú³É²»Í¬µÄµ÷ÊÔĞÅÏ¢
+  "å–å¾—æ–‡ä»¶ç±»å‹
+  "æ›´æ–°æ–‡ä»¶ç±»å‹ç”Ÿæˆä¸åŒçš„è°ƒè¯•ä¿¡æ¯
   let filetype=GetFiletype()
   echom "filetype:".filetype
   if filetype == "php"
@@ -133,22 +133,22 @@ function GenDebug()
 endfunction
 
 function InsertStrNextLine(debuginfo)
-  "getpos() Ôİ´æ´ı»Ö¸´
+  "getpos() æš‚å­˜å¾…æ¢å¤
   let oldpos = getpos(".")
-  "getline È¡µÃµ±Ç°ĞĞ
-  "¸ÄÓÃline('.') getlineÊÇ´Ó»º³åÇøÖĞÈ¡Ò»ĞĞ
+  "getline å–å¾—å½“å‰è¡Œ
+  "æ”¹ç”¨line('.') getlineæ˜¯ä»ç¼“å†²åŒºä¸­å–ä¸€è¡Œ
   let curline = line(".")
   let newline = curline + 1
   "echom "curline:".curline
   "echom "newline:".newline
-  "normal! o,²åÈëÏÂÒ»¿ÕĞĞnormalÄ£Ê½ÏÂo²åÈëÏÂÒ»ĞĞ£¬²¢½øÈë±à¼­Ä£Ê½
+  "normal! o,æ’å…¥ä¸‹ä¸€ç©ºè¡Œnormalæ¨¡å¼ä¸‹oæ’å…¥ä¸‹ä¸€è¡Œï¼Œå¹¶è¿›å…¥ç¼–è¾‘æ¨¡å¼
   normal! o
-  "a:debuginfo±íÃ÷ debuginfoÊÇ²ÎÊı´«µİ½øÀ´µÄ
+  "a:debuginfoè¡¨æ˜ debuginfoæ˜¯å‚æ•°ä¼ é€’è¿›æ¥çš„
   execute setline(newline,a:debuginfo)
-  "TODO °´Ô­ÎÄ¼şÀàĞÍ¸ñÊ½»¯ĞÂ²åÈëµÄĞĞ
+  "TODO æŒ‰åŸæ–‡ä»¶ç±»å‹æ ¼å¼åŒ–æ–°æ’å…¥çš„è¡Œ
   
   execute "normal ".newline."=="
-  "·µ»ØÔ­ĞĞ setpos()
+  "è¿”å›åŸè¡Œ setpos()
   call setpos('.',oldpos)
 endfunction
 
@@ -163,20 +163,20 @@ nmap \db :call InsertDebugInfoAtNextLine()<CR>
 
 au BufRead,BufNewFile *.tpl set filetype=html
 
-"ÒÔµ±Ç°bufferÎÄ¼şÃûÎªÄ¿±ê£¬²éÕÒµ±Ç°vj¹¤³Ì
+"ä»¥å½“å‰bufferæ–‡ä»¶åä¸ºç›®æ ‡ï¼ŒæŸ¥æ‰¾å½“å‰vjå·¥ç¨‹
 
 function SearchBufferInProject()
   let s:winindex=winnr()
   let s:bufindex=winbufnr(s:winindex)
   let name=bufname(s:bufindex) " 
   echom name
-  let name=expand('%:t')  " % µ±Ç°ÎÄ¼şÃû£¬£ºt=¡· like basename()
+  let name=expand('%:t')  " % å½“å‰æ–‡ä»¶åï¼Œï¼št=ã€‹ like basename()
   execute ':vimgrep '.name.' **/*'
 
 endfunction
 nmap \sg :call SearchBufferInProject()<CR>
 
-"ÒÔµ±Ç°¹â±êÏÂ×Ö·û´®ÎªÎÄ¼şÃû£¬ÔÚvjÖĞ²éÕÒ´ËÎÄ¼ş£¬ÔÚquickfixÁĞ±íÖĞÕ¹Ê¾
+"ä»¥å½“å‰å…‰æ ‡ä¸‹å­—ç¬¦ä¸²ä¸ºæ–‡ä»¶åï¼Œåœ¨vjä¸­æŸ¥æ‰¾æ­¤æ–‡ä»¶ï¼Œåœ¨quickfixåˆ—è¡¨ä¸­å±•ç¤º
 function SearchFileInProject()
   let s:name=expand('<cfile>')
   echom s:name
@@ -187,3 +187,7 @@ endfunction
 
 nmap \sd :call SearchFileInProject()<CR>
 
+
+function s:ToogleQuickFix()
+
+endfunction
