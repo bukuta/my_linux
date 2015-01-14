@@ -79,7 +79,7 @@ map <leader>sw :cw<cr>
 "\
 map <leader>sn :cn<cr> 
 map <leader>sp :cp<cr>
-nunmap <leader>ff
+"nunmap <leader>ff
 map <leader>ff :call VGrep()<cr>
 function VGrep()
   let word=expand("<cword>")
@@ -164,8 +164,9 @@ nmap \db :call InsertDebugInfoAtNextLine()<CR>
 au BufRead,BufNewFile *.tpl set filetype=html
 function ReCtags()
   "从当前目录向上找,直到tags文件所在目录,如果找到
-  let s:currentdir=expand("%:p:h") 
-  echom 'current:'.s:currentdir
+  let s:currentfiledir=expand("%:p:h") 
+  let s:cwd=getcwd()
+  echom 'current:'.s:currentfiledir
   let s:tagpath=findfile("tags",";~",1)
   echom "find:".s:tagpath
   let s:cmd=""
@@ -173,10 +174,38 @@ function ReCtags()
     let s:prjroot=fnamemodify(s:tagpath,":h")
     let s:cmd="ctags -R -f ".s:tagpath." ".s:prjroot
   else
-    let s:prjroot= s:currentdir
+    let s:prjroot= s:cwd
     let s:cmd="ctags -R ".s:prjroot
   endif
   echom s:cmd
   execute "!".s:cmd
 endfunction
 map <F9> :call ReCtags()<CR>
+
+
+
+"findfile
+function s:FindFilesWithInProject(filename)
+  "let s:filename=expand('<cfile>');
+  echom "findfile(\"".a:filename."\",\"".getcwd()."/**/*\")"
+  let s:files=findfile(a:filename,getcwd().'/**/*')
+  let s:rs=[]
+  if type(s:files) == type("")
+    call add(s:rs,s:files)
+  elseif type(s:files) == type([])
+    let s:rs=s:files
+  endif
+  return s:rs
+endfunction
+
+function FindCurrentFileEditingWithInProject()
+  "let s:filename=expand('%')
+  let s:filename=expand('<cfile>')
+  echom "find:".s:filename
+  if strlen(s:filename)==0
+    return
+  endif
+  let s:fileslist=s:FindFilesWithInProject(s:filename)
+  echom "show filelist in quickfix window"
+endfunction
+map \ss : call FindCurrentFileEditingWithInProject()<CR>
