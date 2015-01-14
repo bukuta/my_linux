@@ -35,7 +35,7 @@ Bundle 'L9'
 Bundle 'The-NERD-tree'
 Bundle 'FuzzyFinder'
 Bundle 'auto_mkdir'
-"Bundle 'jsbeautify'
+Bundle 'jsbeautify'
 Bundle 'The-NERD-Commenter'
 Bundle 'taglist.vim'
 Bundle 'taglist-plus'
@@ -88,12 +88,12 @@ function VGrep()
   :cw
 endfunction
 function ToggleQuickfix()
-  
+
 endfunction
 
 function GetFiletype()
   let type = &filetype
-  echom "filetype:".type
+  "echom "filetype:".type
   return type
 endfunction
 
@@ -102,7 +102,7 @@ endfunction
 
 function GetWord()
   let word = expand('<cword>')
-  call GetFiletype()
+  "call GetFiletype()
   "取得文件类型，不同的语言取得的变量不同
   "php:$abcde
   "php:$abcde["aaa"]
@@ -123,13 +123,13 @@ function GenDebug()
   "取得文件类型
   "更新文件类型生成不同的调试信息
   let filetype=GetFiletype()
-  echom "filetype:".filetype
+  let s:debugstr=""
   if filetype == "php"
-    let debugstr = "var_dump($".word.",__LINE__,__FILE__);"
+    let s:debugstr = "var_dump($".word.",__LINE__,__FILE__);"
   elseif filetype == "javascript"
-    let debugstr = "console.log(".word.");"
+    let s:debugstr = "console.log(".word.");"
   endif 
-  return debugstr
+  return s:debugstr
 endfunction
 
 function InsertStrNextLine(debuginfo)
@@ -146,7 +146,7 @@ function InsertStrNextLine(debuginfo)
   "a:debuginfo表明 debuginfo是参数传递进来的
   execute setline(newline,a:debuginfo)
   "TODO 按原文件类型格式化新插入的行
-  
+
   execute "normal ".newline."=="
   "返回原行 setpos()
   call setpos('.',oldpos)
@@ -162,32 +162,21 @@ endfunction
 nmap \db :call InsertDebugInfoAtNextLine()<CR>
 
 au BufRead,BufNewFile *.tpl set filetype=html
-
-"以当前buffer文件名为目标，查找当前vj工程
-
-function SearchBufferInProject()
-  let s:winindex=winnr()
-  let s:bufindex=winbufnr(s:winindex)
-  let name=bufname(s:bufindex) " 
-  echom name
-  let name=expand('%:t')  " % 当前文件名，：t=》 like basename()
-  execute ':vimgrep '.name.' **/*'
-
+function ReCtags()
+  "从当前目录向上找,直到tags文件所在目录,如果找到
+  let s:currentdir=expand("%:p:h") 
+  echom 'current:'.s:currentdir
+  let s:tagpath=findfile("tags",";~",1)
+  echom "find:".s:tagpath
+  let s:cmd=""
+  if strlen(s:tagpath)!=0
+    let s:prjroot=fnamemodify(s:tagpath,":h")
+    let s:cmd="ctags -R -f ".s:tagpath." ".s:prjroot
+  else
+    let s:prjroot= s:currentdir
+    let s:cmd="ctags -R ".s:prjroot
+  endif
+  echom s:cmd
+  execute "!".s:cmd
 endfunction
-nmap \sg :call SearchBufferInProject()<CR>
-
-"以当前光标下字符串为文件名，在vj中查找此文件，在quickfix列表中展示
-function SearchFileInProject()
-  let s:name=expand('<cfile>')
-  echom s:name
-  let s:basedir=getcwd()
-  let s:filelist=findfile(s:name,s:basedir."**",-1)
-  echom "path:".join(s:filelist,',')
-endfunction
-
-nmap \sd :call SearchFileInProject()<CR>
-
-
-function s:ToogleQuickFix()
-
-endfunction
+map <F9> :call ReCtags()<CR>
