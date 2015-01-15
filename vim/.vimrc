@@ -188,7 +188,7 @@ map <F9> :call ReCtags()<CR>
 function s:FindFilesWithInProject(filename)
   "let s:filename=expand('<cfile>');
   echom "findfile(\"".a:filename."\",\"".getcwd()."/**/*\")"
-  let s:files=findfile(a:filename,getcwd().'/**/*')
+  let s:files=findfile(a:filename,getcwd().'/**/*;')
   let s:rs=[]
   if type(s:files) == type("")
     call add(s:rs,s:files)
@@ -199,13 +199,33 @@ function s:FindFilesWithInProject(filename)
 endfunction
 
 function FindCurrentFileEditingWithInProject()
-  "let s:filename=expand('%')
-  let s:filename=expand('<cfile>')
+  let s:filename=expand('%:t')
+  "let s:filename=expand('<cfile>')  "当前编辑的文件,在哪些文件中有引用
+  echom "find:".s:filename
+  if strlen(s:filename)==0
+    return
+  endif
+  "let s:fileslist=s:FindFilesWithInProject(s:filename)
+  let s:cmd="vimgrep ".s:filename." **/*"
+  echom 's:cmd:'.s:cmd
+  execute "vimgrep ".s:filename." **/*"
+endfunction
+function FindFileUnderCursorWithInProject()
+  let s:filename=expand('<cfile>')  "当前编辑的文件,在哪些文件中有引用
   echom "find:".s:filename
   if strlen(s:filename)==0
     return
   endif
   let s:fileslist=s:FindFilesWithInProject(s:filename)
-  echom "show filelist in quickfix window"
+  "execute "vimgrep ".s:filename." **/*"
+  echom "found:".join(s:fileslist,',')
+  if len(s:fileslist)==1
+    "直接打开
+    execute ":sp ".fnamemodify(s:fileslist[0],':p')
+  elseif len(s:fileslist)>1
+    echom "found:".join(s:fileslist,',')
+    echom "show filelist in quickfix window"
+  endif
 endfunction
-map \ss : call FindCurrentFileEditingWithInProject()<CR>
+map \sd : call FindCurrentFileEditingWithInProject()<CR>
+map \ss : call FindFileUnderCursorWithInProject()<CR>
