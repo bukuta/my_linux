@@ -89,7 +89,12 @@ function VGrep()
   :cw
 endfunction
 function ToggleQuickfix()
-
+  let s:buffers=buffers()
+  let s:errors=getqflist() "quickfix是否为空
+   "检查是否有
+  for s:b in s:buffers
+    "检查是否有quickfix窗口
+  endfor
 endfunction
 
 function GetFiletype()
