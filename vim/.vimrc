@@ -42,6 +42,7 @@ Bundle 'taglist-plus'
 Bundle 'sessionman.vim'
 Bundle 'bufexplorer.zip'
 Bundle 'leshill/vim-json'
+Bundle 'vim-scripts/cscope.vim'
 
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'kien/ctrlp.vim'
