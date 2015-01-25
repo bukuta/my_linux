@@ -9,7 +9,7 @@ fi
 
 echo $vundle_installed;
 
-if [ $vundle_installed == 0 ]
+if [ $vundle_installed  -eq 0 ]
 then
   echo "git clone vundle"
   git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
@@ -25,10 +25,13 @@ else
   mkdir ~/.bak
 fi
 
-echo "mv ~/.vimrc ~/.bak/.vimrc"
-mv ~/.vimrc ~/.bak/.vimrc
+if [ -r ~/.vimrc ]
+then
+	echo "mv ~/.vimrc ~/.bak/.vimrc"
+	mv ~/.vimrc ~/.bak/.vimrc
+fi
 echo "cp ../vim/.vimrc ~/.vimrc"
-cp ../vim/.vimrc ~/.vimrc
+cp ./vim/.vimrc ~/.vimrc
 
 vim +VundleInstall
 #检测别名是否存在
