@@ -4,13 +4,12 @@ set encoding=utf-8
 set nu
 set autoindent
 set smarttab
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set expandtab
 set foldmethod=syntax
 set foldmethod=indent
 
-setlocal foldlevel=1
 setlocal foldlevel=1
 syntax on
 let b:javascript_fold=1
@@ -20,6 +19,11 @@ let javascript_enable_domhtmlcss=1
 filetype on                   " required!
 filetype indent on
 filetype plugin indent on     " required!
+
+auto BufReadPost *.js|*.php|*.css|*.html retab! 4
+auto BufNewFile *.js|*.php|*.css|*.html retab! 4
+auto BufWritePre *.js|*.php|*.css|*.html retab! 4
+auto BufWritePost *.js|*.php|*.css|*.html retab! 4
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -233,5 +237,27 @@ function FindFileUnderCursorWithInProject()
     echom "show filelist in quickfix window"
   endif
 endfunction
-map \sd : call FindCurrentFileEditingWithInProject()<CR>
-map \ss : call FindFileUnderCursorWithInProject()<CR>
+function FindWordWithInProject()
+  let s:word=expand('<cword>')
+  echom "findword:".s:word
+  execute "vimgrep ".s:word." **/*"
+endfunction
+
+map <leader>sd : call FindCurrentFileEditingWithInProject()<CR>
+map <leader>ss : call FindFileUnderCursorWithInProject()<CR>
+map <leader>sw :call FindWordWithInProject()<CR>
+map <F7> : call PrettyJs()<cr><cr>
+
+function PrettyJs()
+  let s:oldpos = getpos(".")
+  let s:filepath=expand('%:p')
+  execute "!uglifyjs ".s:filepath." -b --comments all -o ~/temp.uglify"
+  " ɾ????????
+  execute ":1,$delete"
+  " ??ȡtemp.uglify???ݵ??б?
+  "let s:lines=readfile(expand("~/temp.uglify"),'')
+  " ???б���??ÿһ??
+  execute append(0,readfile(expand("~/temp.uglify"),''))
+  call setpos('.',s:oldpos)
+
+endfunction
