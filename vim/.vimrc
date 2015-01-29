@@ -10,6 +10,9 @@ set expandtab
 set foldmethod=syntax
 set foldmethod=indent
 
+set showmatch
+set ignorecase
+
 setlocal foldlevel=1
 syntax on
 let b:javascript_fold=1
@@ -248,16 +251,28 @@ map <leader>ss : call FindFileUnderCursorWithInProject()<CR>
 map <leader>sw :call FindWordWithInProject()<CR>
 map <F7> : call PrettyJs()<cr><cr>
 
-function PrettyJs()
-  let s:oldpos = getpos(".")
-  let s:filepath=expand('%:p')
-  execute "!uglifyjs ".s:filepath." -b --comments all -o ~/temp.uglify"
-  " ɾ????????
-  execute ":1,$delete"
-  " ??ȡtemp.uglify???ݵ??б?
-  "let s:lines=readfile(expand("~/temp.uglify"),'')
-  " ???б���??ÿһ??
-  execute append(0,readfile(expand("~/temp.uglify"),''))
-  call setpos('.',s:oldpos)
+function! s:is_js()
+    return expand('%:e') == 'js'
+endfunction
 
+function PrettyJs()
+  if !s:is_js()
+      echom "not a jsfile"
+      return 
+  endif
+  let s:oldpos = getpos(".")
+
+  let s:filepath=expand('%:p')
+  let s:cmd="uglifyjs ".s:filepath." -b --comments all"
+  "echom s:cmd
+  let s:output=system(s:cmd)
+  "删除当前内容
+  :g/.*/d
+  let @0=s:output
+  :put! 0
+  "execute ":1,$delete"   
+  "将uglifyjs输出文件读入
+  "execute append(0,readfile(expand("~/temp.uglify"),''))
+  "恢复光标位置
+  call setpos('.',s:oldpos)
 endfunction
