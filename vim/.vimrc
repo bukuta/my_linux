@@ -10,6 +10,7 @@ set expandtab
 set foldmethod=syntax
 set foldmethod=indent
 
+set diffopt+=iwhite
 set showmatch
 set ignorecase
 
@@ -83,11 +84,10 @@ nmap <F8> :TagbarToggle<CR>
 map <leader>sf :NERDTreeFind<CR>
 map <F8> :!mrsync<CR>
 map <leader>sw :cw<cr>
-"sn sp 距离太远，不方便
-"\
-map <leader>sn :cn<cr> 
+map <leader>sn :cn<cr>
 map <leader>sp :cp<cr>
 "nunmap <leader>ff
+
 map <leader>ff :call VGrep()<cr>
 function VGrep()
   let word=expand("<cword>")
@@ -95,6 +95,7 @@ function VGrep()
   :execute 'vimgrep /'.word.'/ **/*'
   :cw
 endfunction
+
 function ToggleQuickfix()
   let s:buffers=buffers()
   let s:errors=getqflist() "quickfix是否为空
@@ -249,30 +250,29 @@ endfunction
 map <leader>sd : call FindCurrentFileEditingWithInProject()<CR>
 map <leader>ss : call FindFileUnderCursorWithInProject()<CR>
 map <leader>sw :call FindWordWithInProject()<CR>
-map <F7> : call PrettyJs()<cr><cr>
+map <F7> : call PrettyCode()<cr><cr>
 
 function! s:is_js()
     return expand('%:e') == 'js'
 endfunction
+function! s:is_css()
+    return expand('%:e') == 'css'
+endfunction
 
-function PrettyJs()
-  if !s:is_js()
-      echom "not a jsfile"
-      return 
-  endif
+function PrettyCode()
   let s:oldpos = getpos(".")
-
   let s:filepath=expand('%:p')
+    if s:is_js()
   let s:cmd="uglifyjs ".s:filepath." -b --comments all"
-  "echom s:cmd
-  let s:output=system(s:cmd)
-  "删除当前内容
+    elseif s:is_css()
+        let s:cmd="prettycss ".s:filepath." -b --comments all"
+    endif
+
+    if exists('s:cmd')
+        echom s:cmd
+        let @0=system(s:cmd)
   :g/.*/d
-  let @0=s:output
   :put! 0
-  "execute ":1,$delete"   
-  "将uglifyjs输出文件读入
-  "execute append(0,readfile(expand("~/temp.uglify"),''))
-  "恢复光标位置
+    endif
   call setpos('.',s:oldpos)
 endfunction
