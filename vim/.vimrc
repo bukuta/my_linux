@@ -75,6 +75,10 @@ Bundle 'kien/ctrlp.vim'
 "Bundle 'msanders/snipmate.vim'
 "Bundle 'mattn/emmet-vim'
 Bundle 'terryma/vim-expand-region'
+"Bundle 'vim-scripts/closetag.vim'
+Bundle 'othree/html5.vim'
+"let g:closetag_filenames = "*.html,*.xhtml,*.phtml"
+"Bundle 'alvan/vim-closetag'
 
 Bundle 'bling/vim-airline'
 "Bundle 'powerline/powerline'
