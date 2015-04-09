@@ -4,8 +4,8 @@ set encoding=utf-8
 set nu
 set autoindent
 set smarttab
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set foldmethod=syntax
 set foldmethod=indent
@@ -25,10 +25,8 @@ filetype on                   " required!
 filetype indent on
 filetype plugin indent on     " required!
 
-auto BufReadPost *.js|*.php|*.css|*.html retab! 4
-auto BufNewFile *.js|*.php|*.css|*.html retab! 4
-auto BufWritePre *.js|*.php|*.css|*.html retab! 4
-auto BufWritePost *.js|*.php|*.css|*.html retab! 4
+auto BufReadPost *.js|*.php|*.css|*.html retab! 
+auto BufWritePre *.js|*.php|*.css|*.html retab! 
 
 
 
@@ -363,7 +361,7 @@ endfunction
 function EnSmallSection()
     echom '<ctrl+,>'
 endfunction
-noremap > *: call EnLargeSection()<CR>
-noremap < *: call EnSmallSection()<CR>
+"noremap > *: call EnLargeSection()<CR>
+"noremap < *: call EnSmallSection()<CR>
 
 map <c-o> :!pwd<cr>
